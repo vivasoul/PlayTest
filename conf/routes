@@ -4,10 +4,13 @@
 # ~~~~
 
 # An example controller showing a sample home page
+
 GET     /                           controllers.HomeController.index
 GET     /user.view                  controllers.UserController.view(page = "create")
 GET     /user.view/:page            controllers.UserController.view(page)
-
++ nocsrf
+POST    /user.view/:page            controllers.UserController.view(page)
++ nocsrf
 POST    /user                       controllers.UserController.create
 PUT     /user                       controllers.UserController.update
 GET     /user                       controllers.UserController.read

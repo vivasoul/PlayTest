@@ -1,7 +1,40 @@
 /* iPhone 6 */
 @media only screen and (min-device-width: 375px) and (max-device-height: 667px) and (-webkit-device-pixel-ratio: 2){
     body {
-        font-size:50px;
+        /*font-size:50px;*/
+    }
+    #regist_form>table {
+        width:100%;
+        border-spacing: 0px;
+        border-collapse: collapse;
+     }
+    #regist_form th, #regist_form td {
+        border-bottom:1px solid #AAA;
+        padding:3px;
+    }
+
+
+    #regist_form th {
+        text-align:left;
+        width:100px;
+        background-color:#999;
+    }
+
+    #regist_form th {
+
+    }
+
+    input[type=text],input[type=password]{
+        /*width:80%;*/
+        /*height:50px;*/
+    }
+
+    button{
+    /*
+        width:200px;
+        height:50px;
+        font-size:25px;
+        */
     }
 }
 

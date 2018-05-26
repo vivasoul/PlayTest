@@ -3,7 +3,8 @@ package controllers
 import javax.inject._
 import play.api._
 import play.api.mvc._
-
+import util._
+import model._
 /**
 유저 가입			user.view/new 		GET
 #유저 탈퇴			user.view/leave 	GET
@@ -27,15 +28,34 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
    * a path of `/`.
    */
   def view(page: String) = Action { implicit request: Request[AnyContent] => page match {
-      case "read" => Ok(views.html.user.read())
+      case "read" => {
+        val id = Parameter.getFirst(request)("user_id")
+        val pw = Parameter.getFirst(request)("user_pw")
+        //request.queryString
+        if((MockDB.user.contains(id)) && (MockDB.user(id).pw == pw))
+          Ok(views.html.user.read(MockDB.user(id)))
+        else
+          Unauthorized
+      }
       case "update" => Ok(views.html.user.update())
-      case "create" => Ok(views.html.user.create())
+      case "create" => {
+        println(MockDB.user)
+        Ok(views.html.user.create())
+      }
       case _ => NotFound
     }
   }
 
   def create() = Action { implicit request: Request[AnyContent] =>
-     Ok(views.html.user.create())
+
+    val user = User {
+      for ((k, arr) <- request.body.asFormUrlEncoded.get; v = arr match {
+        case Seq(e) => e
+        case Seq() => ""
+      }) yield (k -> v)
+    }
+    MockDB.user += (user.id -> user)
+    Ok(views.html.index())
   }
 
   def update() = Action { implicit request: Request[AnyContent] =>
