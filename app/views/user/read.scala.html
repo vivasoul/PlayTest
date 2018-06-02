@@ -1,5 +1,4 @@
 @import model._
-
 @(user: User)
 <!DOCTYPE html>
 <html lang="en">
@@ -17,38 +16,33 @@
         <table>
             <tr>
                 <th>아이디</th>
-                <td><input id="user_id" name="user_id" type="text" placeholder="vivasoul"/></td>
+                <td><input id="user_id" name="user_id" type="text" value="@user.id" readonly/></td>
             </tr>
             <tr>
                 <th>비밀번호</th>
-                <td><input id="user_pw" name="user_pw" type="password" /></td>
-            </tr>
-            <tr>
-                <th>비밀번호 확인</th>
-                <td><input id="user_pw2" name="user_pw2" type="password" /></td>
+                <td><input id="user_pw" name="user_pw" type="password" value="@user.pw" readonly/></td>
             </tr>
             <tr>
                 <th>이름</th>
-                <td><input id="user_nm" name="user_nm" type="text" placeholder="이기태"/></td>
+                <td><input id="user_nm" name="user_nm" type="text" value="@user.name" readonly/></td>
             </tr>
             <tr>
                 <th>이름(영문)</th>
-                <td><input id="user_nm_en" name="user_nm_en" type="text" placeholder="Kitae Lee"/></td>
+                <td><input id="user_nm_en" name="user_nm_en" type="text" value="@user.name_en" readonly/></td>
             </tr>
             <tr>
                 <th>이메일</th>
                 <td>
-                    <input id="email" name="email" type="text" style="width:50%" placeholder="vivasoul"/>@@<select id="email_type" name="email_type">
-                    <option value="@@naver.com">naver.com</option>
-                    <option value="@@gmail.com">gmail.com</option>
-                    <option value="@@daum.net">daum.net</option>
-                </select>
+                    <input id="email" name="email" type="text" value="@user.email" readonly/>
                 </td>
             </tr>
             <tr>
                 <th>전화번호</th>
-                <td><input id="tel_no" name="tel_no" type="text" placeholder="010-0000-0000" /></td>
+                <td><input id="tel_no" name="tel_no" type="text" value="@user.tel_no" readonly /></td>
             </tr>
         </table>
+        <div style="text-align:center">
+            <a href="/user.view/update?user_id=@user.id"><button type="button">정보수정</button></a>
+        </div>
     </body>
 </html>

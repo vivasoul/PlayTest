@@ -1,15 +1,70 @@
-@()
+@import model._
+@(user: User)
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <title>User Page</title>
-        <!--<meta name="viewport" width="device-width">-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
         <script src="@routes.Assets.versioned("javascripts/lib/jquery-3.3.1.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.versioned("javascripts/main.js")" type="text/javascript"></script>
+        <script type="text/javascript">
+            var update_user = function(){
+                jQuery.ajax({
+                    "url" : "/user",
+                    "method" : "PUT",
+                    "data" : jQuery("#update_form").serialize(),
+                    "dataType" : "json",
+                    "error" : function(e){
+                        alert(e.message);
+                    },
+                    "success" : function(e){
+                        alert("수정하였습니다!");
+                    }
+                });
+            };
+
+            jQuery(document).ready(function(e){
+                jQuery("#update_btn").on("click",update_user);
+            });
+        </script>
     </head>
     <body>
-        유저 정보 수정 페이지입니다.
+    <div style="text-align:center">환영합니다! @user.name 님!</div>
+    <table>
+        <form id="update_form">
+        <tr>
+            <th>아이디</th>
+            <td><input id="user_id" name="user_id" type="text" value="@user.id"/></td>
+        </tr>
+        <!--
+        <tr>
+            <th>비밀번호</th>
+            <td><input id="user_pw" name="user_pw" type="password" value="@user.pw"/></td>
+        </tr>
+        -->
+        <tr>
+            <th>이름</th>
+            <td><input id="user_nm" name="user_nm" type="text" value="@user.name"/></td>
+        </tr>
+        <tr>
+            <th>이름(영문)</th>
+            <td><input id="user_nm_en" name="user_nm_en" type="text" value="@user.name_en"/></td>
+        </tr>
+        <tr>
+            <th>이메일</th>
+            <td>
+                <input id="email" name="email" type="text" value="@user.email"/>
+            </td>
+        </tr>
+        <tr>
+            <th>전화번호</th>
+            <td><input id="tel_no" name="tel_no" type="text" value="@user.tel_no" /></td>
+        </tr>
+    </table>
+    </form>
+        <button type="button" id="update_btn">저장</button>
+        <a href="/"><button type="button">취소</button></a>
     </body>
 </html>

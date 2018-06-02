@@ -28,7 +28,7 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
    * a path of `/`.
    */
   def view(page: String) = Action { implicit request: Request[AnyContent] => page match {
-      case "read" => {
+      case "read" =>
         val id = Parameter.getFirst(request)("user_id")
         val pw = Parameter.getFirst(request)("user_pw")
         //request.queryString
@@ -36,12 +36,13 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
           Ok(views.html.user.read(MockDB.user(id)))
         else
           Unauthorized
-      }
-      case "update" => Ok(views.html.user.update())
-      case "create" => {
+      case "update" =>
+        val id = Parameter.getFirst(request)("user_id")
+        if(id.isEmpty || !MockDB.user.contains(id))  Unauthorized
+        else                                         Ok(views.html.user.update(MockDB.user(id)))
+      case "create" =>
         println(MockDB.user)
         Ok(views.html.user.create())
-      }
       case _ => NotFound
     }
   }
@@ -59,7 +60,18 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
   }
 
   def update() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.user.create())
+    val user =
+      for ((k, arr) <- request.body.asFormUrlEncoded.get; v = arr match {
+        case Seq(e) => e
+        case Seq() => ""
+      }) yield (k -> v)
+
+    if(MockDB.user.contains(user("user_id"))) {
+      MockDB.user(user("user_id")).update(user)
+      Ok("[]")
+    }
+    else
+      NotFound
   }
 
   def delete() = Action { implicit request: Request[AnyContent] =>

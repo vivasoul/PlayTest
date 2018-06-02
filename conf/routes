@@ -12,8 +12,11 @@ GET     /user.view/:page            controllers.UserController.view(page)
 POST    /user.view/:page            controllers.UserController.view(page)
 + nocsrf
 POST    /user                       controllers.UserController.create
++ nocsrf
 PUT     /user                       controllers.UserController.update
++ nocsrf
 GET     /user                       controllers.UserController.read
++ nocsrf
 DELETE  /user                       controllers.UserController.delete
 
 # Map static resources from the /public folder to the /assets URL path
