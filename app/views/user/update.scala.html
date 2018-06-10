@@ -32,8 +32,8 @@
     </head>
     <body>
     <div style="text-align:center">환영합니다! @user.name 님!</div>
+    <form id="update_form">
     <table>
-        <form id="update_form">
         <tr>
             <th>아이디</th>
             <td><input id="user_id" name="user_id" type="text" value="@user.id"/></td>
@@ -63,6 +63,7 @@
             <td><input id="tel_no" name="tel_no" type="text" value="@user.tel_no" /></td>
         </tr>
     </table>
+    <input name="user_no" type="hidden" value="@user.no"/>
     </form>
         <button type="button" id="update_btn">저장</button>
         <a href="/"><button type="button">취소</button></a>

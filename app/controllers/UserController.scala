@@ -32,16 +32,17 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
         val id = Parameter.getFirst(request)("user_id")
         val pw = Parameter.getFirst(request)("user_pw")
         //request.queryString
-        if((MockDB.user.contains(id)) && (MockDB.user(id).pw == pw))
-          Ok(views.html.user.read(MockDB.user(id)))
-        else
-          Unauthorized
+        Users.login(id, pw) match {
+          case x: User => Ok(views.html.user.read(x))
+          case _ => Unauthorized
+        }
       case "update" =>
-        val id = Parameter.getFirst(request)("user_id")
-        if(id.isEmpty || !MockDB.user.contains(id))  Unauthorized
-        else                                         Ok(views.html.user.update(MockDB.user(id)))
+        Users(Parameter.getFirst(request)("user_no").toInt) match {
+          case x: User => Ok(views.html.user.update(x))
+          case _ => NotFound
+        }
       case "create" =>
-        println(MockDB.user)
+        //println(Users.user)
         Ok(views.html.user.create())
       case _ => NotFound
     }
@@ -49,29 +50,26 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
 
   def create() = Action { implicit request: Request[AnyContent] =>
 
-    val user = User {
+    val user = UserMapper {
       for ((k, arr) <- request.body.asFormUrlEncoded.get; v = arr match {
         case Seq(e) => e
         case Seq() => ""
       }) yield (k -> v)
     }
-    MockDB.user += (user.id -> user)
-    Ok(views.html.index())
+    Users += user
+    Ok
   }
 
   def update() = Action { implicit request: Request[AnyContent] =>
-    val user =
+    val user = UserMapper {
       for ((k, arr) <- request.body.asFormUrlEncoded.get; v = arr match {
         case Seq(e) => e
         case Seq() => ""
       }) yield (k -> v)
-
-    if(MockDB.user.contains(user("user_id"))) {
-      MockDB.user(user("user_id")).update(user)
-      Ok("[]")
     }
-    else
-      NotFound
+
+    Users *= user
+    Ok
   }
 
   def delete() = Action { implicit request: Request[AnyContent] =>

@@ -41,8 +41,9 @@
                 <td><input id="tel_no" name="tel_no" type="text" value="@user.tel_no" readonly /></td>
             </tr>
         </table>
+        <input name="user_no" type="hidden" value="@user.no"/>
         <div style="text-align:center">
-            <a href="/user.view/update?user_id=@user.id"><button type="button">정보수정</button></a>
+            <a href="/user.view/update?user_no=@user.no"><button type="button">정보수정</button></a>
         </div>
     </body>
 </html>
