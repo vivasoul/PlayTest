@@ -3,8 +3,7 @@ package model
 import play.api.db.Database
 import javax.inject._
 
-class UserDAO{
-  @Inject() var db: Database = null
+class UserDAO @Inject()(db: Database){
 
   def update(user: User) :Unit = {
     val conn = db.getConnection()
@@ -12,10 +11,10 @@ class UserDAO{
       val stmt = conn.createStatement
       val dataSet = UserMapper.getNotEmpty(user)
       val sql = "UPDATE tb_user SET "+
-                 dataSet._2.map(x => x._1+"="+x._2).mkString(",")+
+                 dataSet._2.map(x => x._1+"='"+x._2+"'").mkString(",")+
                  " WHERE no="+dataSet._1
-      stmt.executeUpdate(sql)
       println(sql)
+      stmt.executeUpdate(sql)
     } finally {
       conn.close()
     }
@@ -29,8 +28,8 @@ class UserDAO{
       val sql = "INSERT INTO tb_user ("+
                  dataSet._2.map(_._1).mkString(",")+
                  ") VALUES ("+dataSet._2.map("'"+_._2+"'").mkString(",")+")"
-      stmt.executeUpdate(sql)
       println(sql)
+      stmt.executeUpdate(sql)
     } finally {
       conn.close()
     }
@@ -40,7 +39,7 @@ class UserDAO{
     val conn = db.getConnection()
     try {
       val stmt = conn.createStatement
-      val sql = s"SELECT * FROM tb_user WHERE user_no=${user_no}"
+      val sql = s"SELECT * FROM tb_user WHERE no=${user_no}"
       val rs = stmt.executeQuery(sql)
       println(sql)
       var userMap = Map[String,String]()

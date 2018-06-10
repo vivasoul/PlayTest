@@ -1,5 +1,7 @@
 package model
 
+import javax.inject.{Inject, Singleton}
+
 case class User(val no: Int, var id: String,var pw: String,var name: String,var name_en:String,var email: String,  var tel_no: String )
 
 object UserMapper {
@@ -9,7 +11,7 @@ object UserMapper {
       var user_no = -1
       if(userMap.contains("user_no")) user_no = userMap("user_no").toInt
 
-      new User(user_no, userMap("user_id"),userMap("user_pw"), userMap("user_nm"),
+      new User(user_no, userMap("user_id"),userMap.getOrElse("user_pw",""), userMap("user_nm"),
                 userMap("user_nm_en"), userMap("email"), userMap("tel_no") )
     }
   }
@@ -27,8 +29,8 @@ object UserMapper {
   }
 }
 
-object Users {
-  val userDAO = new UserDAO
+@Singleton
+class Users @Inject()(userDAO: UserDAO) {
 
   def += (user: User): Unit = {
     userDAO.insert(user)

@@ -18,7 +18,7 @@ import model._
 유저 정보 보기 기능 user 			GET			READ
  */
 @Singleton
-class UserController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+class UserController @Inject()(users: Users, cc: ControllerComponents) extends AbstractController(cc) {
 
   /**
    * Create an Action to render an HTML page.
@@ -32,12 +32,12 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
         val id = Parameter.getFirst(request)("user_id")
         val pw = Parameter.getFirst(request)("user_pw")
         //request.queryString
-        Users.login(id, pw) match {
+        users.login(id, pw) match {
           case x: User => Ok(views.html.user.read(x))
           case _ => Unauthorized
         }
       case "update" =>
-        Users(Parameter.getFirst(request)("user_no").toInt) match {
+        users(Parameter.getFirst(request)("user_no").toInt) match {
           case x: User => Ok(views.html.user.update(x))
           case _ => NotFound
         }
@@ -56,7 +56,7 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
         case Seq() => ""
       }) yield (k -> v)
     }
-    Users += user
+    users += user
     Ok
   }
 
@@ -68,7 +68,7 @@ class UserController @Inject()(cc: ControllerComponents) extends AbstractControl
       }) yield (k -> v)
     }
 
-    Users *= user
+    users *= user
     Ok
   }
 

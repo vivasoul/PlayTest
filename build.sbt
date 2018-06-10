@@ -9,7 +9,7 @@ scalaVersion := "2.12.4"
 
 libraryDependencies += guice
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
-//libraryDependencies += jdbc
+libraryDependencies += jdbc
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.41"
 
 // Adds additional packages into Twirl
