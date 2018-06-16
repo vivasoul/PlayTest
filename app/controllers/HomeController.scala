@@ -20,8 +20,10 @@ class HomeController @Inject()(userDAO: UserDAO, cc: ControllerComponents) exten
    * a path of `/`.
    */
   def index() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.index())
-    //Ok(views.html.index())
+    request.session.get("user_no") match {
+      case Some(x) => Redirect("/main")
+      case _ => Ok(views.html.index())
+    }
   }
 
   def main() = Action { implicit request: Request[AnyContent] =>
