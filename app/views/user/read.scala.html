@@ -18,10 +18,12 @@
                 <th>아이디</th>
                 <td><input id="user_id" name="user_id" type="text" value="@user.id" readonly/></td>
             </tr>
+            <!--
             <tr>
                 <th>비밀번호</th>
                 <td><input id="user_pw" name="user_pw" type="password" value="@user.pw" readonly/></td>
             </tr>
+            -->
             <tr>
                 <th>이름</th>
                 <td><input id="user_nm" name="user_nm" type="text" value="@user.name" readonly/></td>
@@ -43,7 +45,8 @@
         </table>
         <input name="user_no" type="hidden" value="@user.no"/>
         <div style="text-align:center">
-            <a href="/user.view/update?user_no=@user.no"><button type="button">정보수정</button></a>
+            <a href="/user.view/update"><button type="button">정보수정</button></a>
+            <a href="/main"><button type="button">Home</button></a>
         </div>
     </body>
 </html>

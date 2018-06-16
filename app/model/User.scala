@@ -1,7 +1,5 @@
 package model
 
-import javax.inject.{Inject, Singleton}
-
 case class User(val no: Int, var id: String,var pw: String,var name: String,var name_en:String,var email: String,  var tel_no: String )
 
 object UserMapper {
@@ -16,6 +14,18 @@ object UserMapper {
     }
   }
 
+  def toMap(user: User): Map[String, String] = {
+    Map(
+      ("user_no" -> user.id),
+      ("user_id" -> user.id),
+      //("pw" -> user.pw),
+      ("user_nm" -> user.name),
+      ("user_nm_en" -> user.name_en),
+      ("email" -> user.email),
+      ("tel_no" -> user.tel_no)
+    )
+  }
+
   def getNotEmpty(user: User): (Int, Map[String, String]) = {
     var validMap = Map[String, String]()
     if(!user.id.isEmpty) validMap += ("id" -> user.id)
@@ -26,25 +36,5 @@ object UserMapper {
     if(!user.tel_no.isEmpty) validMap += ("tel_no" -> user.tel_no)
 
     (user.no, validMap)
-  }
-}
-
-@Singleton
-class Users @Inject()(userDAO: UserDAO) {
-
-  def += (user: User): Unit = {
-    userDAO.insert(user)
-  }
-
-  def *= (user: User): Unit = {
-    userDAO.update(user)
-  }
-
-  def apply(user_no: Int): User = {
-    userDAO.select(user_no)
-  }
-
-  def login(user_id: String, user_pw: String): User = {
-    userDAO.secretSelect(user_id, user_pw)
   }
 }

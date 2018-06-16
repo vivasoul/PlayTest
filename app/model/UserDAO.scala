@@ -3,9 +3,11 @@ package model
 import play.api.db.Database
 import javax.inject._
 
+@Singleton
 class UserDAO @Inject()(db: Database){
 
-  def update(user: User) :Unit = {
+  //UPDATE
+  def *=(user: User) :Unit = {
     val conn = db.getConnection()
     try {
       val stmt = conn.createStatement
@@ -19,8 +21,8 @@ class UserDAO @Inject()(db: Database){
       conn.close()
     }
   }
-
-  def insert(user: User) :Unit = {
+  //INSERT
+  def +=(user: User) :Unit = {
     val conn = db.getConnection()
     try {
       val stmt = conn.createStatement
@@ -34,8 +36,8 @@ class UserDAO @Inject()(db: Database){
       conn.close()
     }
   }
-
-  def select(user_no: Int) :User = {
+  //SELECT
+  def apply(user_no: Int) :User = {
     val conn = db.getConnection()
     try {
       val stmt = conn.createStatement
@@ -56,8 +58,8 @@ class UserDAO @Inject()(db: Database){
       conn.close()
     }
   }
-
-  def secretSelect(user_id: String, user_pw: String) :User = {
+  //SELECT to login
+  def login(user_id: String, user_pw: String) :User = {
     val conn = db.getConnection()
     try {
       val stmt = conn.createStatement

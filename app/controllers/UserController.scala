@@ -18,7 +18,7 @@ import model._
 유저 정보 보기 기능 user 			GET			READ
  */
 @Singleton
-class UserController @Inject()(users: Users, cc: ControllerComponents) extends AbstractController(cc) {
+class UserController @Inject()(userDAO: UserDAO, cc: ControllerComponents) extends AbstractController(cc) {
 
   /**
    * Create an Action to render an HTML page.
@@ -29,23 +29,41 @@ class UserController @Inject()(users: Users, cc: ControllerComponents) extends A
    */
   def view(page: String) = Action { implicit request: Request[AnyContent] => page match {
       case "read" =>
-        val id = Parameter.getFirst(request)("user_id")
-        val pw = Parameter.getFirst(request)("user_pw")
-        //request.queryString
-        users.login(id, pw) match {
-          case x: User => Ok(views.html.user.read(x))
-          case _ => Unauthorized
-        }
+          println(request.session)
+          request.session.get("user_no") match {
+            case Some(x) => Ok(views.html.user.read(userDAO(x.toInt)))
+            case _ => Unauthorized
+          }
       case "update" =>
-        users(Parameter.getFirst(request)("user_no").toInt) match {
-          case x: User => Ok(views.html.user.update(x))
-          case _ => NotFound
+        request.session.get("user_no") match {
+          case Some(x) => Ok(views.html.user.update(userDAO(x.toInt)))
+          case _ => Unauthorized
         }
       case "create" =>
         //println(Users.user)
         Ok(views.html.user.create())
       case _ => NotFound
     }
+  }
+
+
+
+  def login() = Action { implicit request: Request[AnyContent] =>
+    val id = Parameter.getFirst(request)("user_id")
+    val pw = Parameter.getFirst(request)("user_pw")
+    //request.queryString
+    userDAO.login(id, pw) match {
+      case x: User => {
+        Redirect("/main").withSession (
+          request.session + ("user_no" -> x.no.toString)
+        )
+      }
+      case _ => Unauthorized
+    }
+  }
+
+  def logout() = Action { implicit request: Request[AnyContent] =>
+    Redirect("/").withNewSession
   }
 
   def create() = Action { implicit request: Request[AnyContent] =>
@@ -56,8 +74,10 @@ class UserController @Inject()(users: Users, cc: ControllerComponents) extends A
         case Seq() => ""
       }) yield (k -> v)
     }
-    users += user
-    Ok
+    userDAO += user
+    Redirect("/main").withSession(
+      request.session + ("user_no" -> user.no.toString)
+    )
   }
 
   def update() = Action { implicit request: Request[AnyContent] =>
@@ -68,15 +88,15 @@ class UserController @Inject()(users: Users, cc: ControllerComponents) extends A
       }) yield (k -> v)
     }
 
-    users *= user
+    userDAO *= user
     Ok
   }
 
   def delete() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.user.create())
+    Ok
   }
 
   def read() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.user.create())
+    Ok
   }
 }
